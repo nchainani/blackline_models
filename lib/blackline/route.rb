@@ -61,4 +61,16 @@ class Route
       end
     end
   end
+
+  def self.all(&block)
+    HttpClient.get("#{ROUTES_PATH}/all", {}) do |response|
+      if response.ok?
+        routes = response.body rescue []
+        routes_obj = routes.map do |route|
+          initWithHttpRoute(route)
+        end
+        block.call(routes_obj, nil) if block
+      end
+    end
+  end
 end
